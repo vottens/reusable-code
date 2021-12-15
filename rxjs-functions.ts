@@ -10,3 +10,6 @@ clearInterval(configurationTimeout);
 this.configurationTimeout = setTimeout(() => {
    // store.dispatch(layoutActions.getConfiguration());
 }, 20000)
+
+// Count array
+const amount = reduce(request.orderItems, (result, curr) => result + (curr.grossUnitPrice * curr.quantity), 0);
