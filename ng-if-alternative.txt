@@ -1,0 +1,17 @@
+<ng-container #app [ngTemplateOutlet]="content">
+</ng-container>
+
+<ng-template #content>
+
+</ng-template>
+
+@ViewChild('app', { read: ViewContainerRef }) outletRef: ViewContainerRef;
+@ViewChild('content', { read: TemplateRef }) contentRef: TemplateRef<any>;
+
+private renderPage(): void {
+    // Clear the translated content and create a new embedded view with the updated content.
+    this._translated = {};
+    this.outletRef.clear();
+    this.outletRef.createEmbeddedView(this.contentRef);
+    this._changeDetectorRef.detectChanges();
+}
