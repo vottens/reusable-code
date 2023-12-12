@@ -1,0 +1,50 @@
+Sub FindAndChangeKeywords()
+    ' Charles Kenyon - From Doug Robbins' code
+    Dim DocSource As Document, DocTarget As Document
+    Dim rng As Range
+    Dim FD As FileDialog
+    Dim strFileName As String
+    Dim i As Long
+    Dim rngKeyword As Range
+    Dim strKeyword As String
+    Set DocTarget = ActiveDocument  ' THIS IS THE LONG DOCUMENT
+    Set FD = Application.FileDialog(msoFileDialogOpen) ' does not work:(msoFileDialogFolderPicker)
+    With FD
+        .Title = "Select the file containing the key words."
+        .AllowMultiSelect = False
+        If .Show = -1 Then
+            strFileName = .SelectedItems(1)
+        Else
+            MsgBox "You did not select the file containing the key words."
+            Exit Sub
+        End If
+    End With
+    Set DocSource = Documents.Open(strFileName)
+    With DocSource
+        For i = 1 To .Paragraphs.Count
+            '   COMMENT OUT MARKING OF TEXT IN SOURCE
+            Set rngKeyword = .Paragraphs(i).Range
+            rngKeyword.MoveEnd wdCharacter, -1
+            strKeyword = rngKeyword.Text
+'            If InStr(DocTarget.Range, strKeyword) > 0 Then
+'                rngKeyword.Font.ColorIndex = wdGreen
+'            Else
+'                rngKeyword.Font.ColorIndex = wdRed
+'            End If
+            With DocTarget.Range.Find
+                .ClearFormatting
+                .Replacement.ClearFormatting
+                .Text = strKeyword
+                .Replacement.Font.Bold = True
+                .Replacement.Font.ColorIndex = Black
+                .Forward = True
+                .Execute Replace:=wdReplaceAll
+            End With
+        Next i
+        .Close SaveChanges:=False
+        Set DocTarget = Nothing
+        Set FD = Nothing
+        Set rngKeyword = Nothing
+        Set rng = Nothing
+    End With
+End Sub
